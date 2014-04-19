@@ -1,0 +1,28 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$-beta1</version>
+    <title>$title$</title>
+    <authors>J.Sakamoto</authors>
+    <owners>J.Sakamoto</owners>
+    <licenseUrl>https://github.com/jsakamoto/smtp-message/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/jsakamoto/smtp-message</projectUrl>
+    <!--
+    <iconUrl/>
+    -->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>
+    </summary>
+    <description>
+      (Description here.)
+    </description>
+    <releaseNotes>
+      <![CDATA[
+      ]]>
+    </releaseNotes>
+    <tags>smtp,mime,mail,message</tags>
+    <dependencies>
+    </dependencies>
+  </metadata>
+</package>

@@ -1,0 +1,18 @@
+Content-Type: multipart/mixed; charset=us-ascii; boundary=--boundary--
+Content-Transfer-Encoding: 7bit
+From: taro@example.com
+To: "Hanako" <hanako@example.com>, "Jiro" <jiro@example.com>
+Subject: [HELLO WORLD]
+
+----boundary--
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Hello, World.
+----boundary--
+Content-Type: text/plain; charset=us-ascii; name=hello-world.txt
+Content-Transfer-Encoding: 7bit
+Content-Disposition: -
+
+Hello, World.
+----boundary----
