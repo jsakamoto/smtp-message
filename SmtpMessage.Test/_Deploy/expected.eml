@@ -1,7 +1,12 @@
+X-ToolbeltNetSmtp-Id: 0a09ebcdd3544646b72325c743474a26
+X-ToolbeltNetSmtp-MailFrom: taro@example.com
+X-ToolbeltNetSmtp-RcptTo: hanako@example.com
+ jiro@example.com
 Content-Type: multipart/mixed; charset=us-ascii; boundary=--boundary--
 Content-Transfer-Encoding: 7bit
 From: taro@example.com
 To: "Hanako" <hanako@example.com>, "Jiro" <jiro@example.com>
+Date: 2 Jan 2014 20:23:13 +0900
 Subject: [HELLO WORLD]
 
 ----boundary--

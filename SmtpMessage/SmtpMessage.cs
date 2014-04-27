@@ -15,7 +15,7 @@ namespace Toolbelt.Net.Smtp
         protected MIMEPart _MIMEPart;
 
         public List<SmtpHeader> Headers { get { return _MIMEPart.Headers; } }
-        
+
         public List<string> Data { get { return _MIMEPart.Data; } }
 
         public Guid Id { get; set; }
@@ -59,9 +59,18 @@ namespace Toolbelt.Net.Smtp
             }
         }
 
+        public DateTime? Date
+        {
+            get
+            {
+                var d = default(DateTime);
+                return DateTime.TryParse(this.Headers.ValueOf("Date"), out d) ? d : (DateTime?)null;
+            }
+        }
+
         public string Subject { get { return MIMEDecoder.DecodeText(this.Headers.ValueOf("Subject")); } }
 
-        public MailAddress From { get { return new MailAddress(MIMEDecoder.DecodeText(this.Headers.ValueOf("From"))); } }
+        public MailAddress From { get { return this.Headers.ValueOf("From") != "" ? new MailAddress(MIMEDecoder.DecodeText(this.Headers.ValueOf("From"))) : null; } }
 
         public MailAddress[] To { get { return HeaderToMailAddresses("To"); } }
 
@@ -86,12 +95,42 @@ namespace Toolbelt.Net.Smtp
 
         public void SaveAs(string saveToPath)
         {
+            this.Headers.Insert(0, new SmtpHeader("X-ToolbeltNetSmtp-Id", this.Id.ToString("N")));
+            this.Headers.Insert(1, new SmtpHeader("X-ToolbeltNetSmtp-MailFrom", this.MailFrom));
+            this.Headers.Insert(2, new SmtpHeader("X-ToolbeltNetSmtp-RcptTo", this.RcptTo.ToArray()));
+
             this._MIMEPart.SaveAs(saveToPath);
+
+            StripMetaHeaders();
         }
 
         public void Load(string loadFromPath)
         {
             this._MIMEPart.Load(loadFromPath);
+
+            var id = default(Guid);
+            if (Guid.TryParse(this.Headers.ValueOf("X-ToolbeltNetSmtp-Id"), out id))
+                this.Id = id;
+            this.MailFrom = this.Headers.ValueOf("X-ToolbeltNetSmtp-MailFrom");
+            this.RcptTo.Clear();
+            this.RcptTo.AddRange(this.Headers.Find("X-ToolbeltNetSmtp-RcptTo").RawValues);
+
+            StripMetaHeaders();
+        }
+
+        private void StripMetaHeaders()
+        {
+            this.Headers
+                .Where(h => h.Key.StartsWith("X-ToolbeltNetSmtp-"))
+                .ToList()
+                .ForEach(h => this.Headers.Remove(h));
+        }
+
+        public static SmtpMessage CreateFrom(string path)
+        {
+            var msg = new SmtpMessage();
+            msg.Load(path);
+            return msg;
         }
     }
 }

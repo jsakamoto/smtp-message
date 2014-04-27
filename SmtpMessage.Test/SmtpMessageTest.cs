@@ -184,13 +184,32 @@ namespace Toolbelt.Net.Smtp.Test
             msg.CC.Count().Is(0);
         }
 
+        [TestMethod]
+        public void Date_Test()
+        {
+            var msg = new SmtpMessage();
+            msg.Date.IsNull();
+            msg.Headers.Add("Date", "2 Jan 2014 20:23:13 +0900");
+            msg.Date.Is(DateTime.Parse("2014/1/2 20:23:13"));
+        }
+
+        [TestMethod]
+        public void Attachment_Empty_Test()
+        {
+            var msg = new SmtpMessage();
+            msg.Attachments.Count().Is(0);
+        }
+
         private static SmtpMessage CreateTestMessage1()
         {
             var msg = new SmtpMessage();
+            msg.Id = Guid.Parse("0a09ebcdd3544646b72325c743474a26");
+            msg.MailFrom = "taro@example.com";
             msg.Headers.Add("Content-Type", "multipart/mixed; charset=us-ascii; boundary=--boundary--");
             msg.Headers.Add("Content-Transfer-Encoding", "7bit");
             msg.Headers.Add("From", "taro@example.com");
             msg.Headers.Add("To", @"""Hanako"" <hanako@example.com>, ""Jiro"" <jiro@example.com>");
+            msg.Headers.Add("Date", "2 Jan 2014 20:23:13 +0900");
             msg.Headers.Add("Subject", "[HELLO WORLD]");
             msg.MailFrom = "taro@example.com";
             msg.RcptTo.Add("hanako@example.com");
@@ -214,6 +233,27 @@ namespace Toolbelt.Net.Smtp.Test
         }
 
         [TestMethod]
+        public void Can_Serialize_Deserialize_as_Json_by_JsonNET_Minimum_Test()
+        {
+            var msg = new SmtpMessage();
+            msg.Headers.Add("Content-Type", "text/plain; charset=us-ascii");
+            msg.Headers.Add("Content-Transfer-Encoding", "7bit");
+
+            // Can serialize.
+            var json = JsonConvert.SerializeObject(msg);
+            Debug.WriteLine(json);
+
+            // Can deserialize.
+            var msg2 = JsonConvert.DeserializeObject<SmtpMessage>(json);
+            msg2.MailFrom.IsNull();
+            msg2.RcptTo.Count().Is(0);
+            msg2.Headers.OrderBy(h => h.Key).Select(h => new { h.Key, h.Value }.ToString()).Is(
+                "{ Key = Content-Transfer-Encoding, Value = 7bit }",
+                "{ Key = Content-Type, Value = text/plain; charset=us-ascii }");
+            msg2.Attachments.Count().Is(0);
+        }
+
+        [TestMethod]
         public void Can_Serialize_Deserialize_as_Json_by_JsonNET_Test()
         {
             var msg = CreateTestMessage1();
@@ -234,6 +274,7 @@ namespace Toolbelt.Net.Smtp.Test
             msg.Headers.Select(h => h.Key).OrderBy(k => k).Is(
                 "Content-Transfer-Encoding",
                 "Content-Type",
+                "Date",
                 "From",
                 "Subject",
                 "To");
@@ -241,6 +282,7 @@ namespace Toolbelt.Net.Smtp.Test
             msg.Headers.ValueOf("Content-Transfer-Encoding").Is("7bit");
             msg.Headers.ValueOf("From").Is("taro@example.com");
             msg.Headers.ValueOf("To").Is(@"""Hanako"" <hanako@example.com>, ""Jiro"" <jiro@example.com>");
+            msg.Headers.ValueOf("Date").Is("2 Jan 2014 20:23:13 +0900");
             msg.Headers.ValueOf("Subject").Is("[HELLO WORLD]");
             msg.Data.Is(
                 "----boundary--",

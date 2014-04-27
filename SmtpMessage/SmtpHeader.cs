@@ -9,7 +9,7 @@ namespace Toolbelt.Net.Smtp
     {
         public string Key { get; set; }
 
-        public ICollection<string> RawValues { get; protected set; }
+        public List<string> RawValues { get; set; }
 
         public string Value { get { return string.Concat(this.RawValues); } }
 
@@ -20,10 +20,10 @@ namespace Toolbelt.Net.Smtp
 
         public SmtpHeader(string rawString)
         {
-            var pair = rawString.SplitAndTrim(':');
-            this.Key = pair.First();
+            var splitPos = rawString.IndexOf(':');
+            this.Key = rawString.Substring(0, splitPos);
             this.RawValues = new List<string>();
-            this.RawValues.Add(pair.Last());
+            this.RawValues.Add(rawString.Substring(splitPos + 1).Trim());
         }
 
         public SmtpHeader(string key, params string[] values)

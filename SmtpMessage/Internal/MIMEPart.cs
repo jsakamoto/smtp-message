@@ -27,6 +27,7 @@ namespace Toolbelt.Net.Smtp.Internal
 
         public IEnumerable<MIMEPart> GetMultiParts()
         {
+            if (this.Headers.GetContentType().ToLower() != "multipart/mixed") return Enumerable.Empty<MIMEPart>();
             var boundary = this.Headers.GetBoundary();
             return SplitByBoundary(this.Data, "--" + boundary, "--" + boundary + "--")
              .Select(lines => new MIMEPart(
@@ -71,7 +72,8 @@ namespace Toolbelt.Net.Smtp.Internal
             {
                 foreach (var header in this.Headers)
                 {
-                    writer.WriteLine("{0}: {1}", header.Key, header.Value);
+                    writer.WriteLine("{0}: {1}", header.Key, header.RawValues.First());
+                    foreach (var v in header.RawValues.Skip(1)) writer.WriteLine(" " + v);
                 }
 
                 writer.WriteLine("");
