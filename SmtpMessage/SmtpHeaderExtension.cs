@@ -13,9 +13,10 @@ namespace Toolbelt.Net.Smtp
             return (headers.FirstOrDefault(hd => hd.Key.ToUpper() == headerName) ?? SmtpHeader.Empty);
         }
 
-        public static string ValueOf(this IEnumerable<SmtpHeader> headers, string headerName)
+        public static string ValueOf(this IEnumerable<SmtpHeader> headers, string headerName, string defaultValue = "")
         {
-            return headers.Find(headerName).Value;
+            var value = headers.Find(headerName).Value;
+            return value != "" ? value : defaultValue;
         }
 
         public static void Add(this ICollection<SmtpHeader> hedaers, string key, params string[] values)
@@ -58,12 +59,12 @@ namespace Toolbelt.Net.Smtp
             var contentType = headers.ValueOf("Content-Type");
             var m = Regex.Match(contentType, "^(?<type>[a-z0-9/]+)", RegexOptions.IgnoreCase);
             var grp = m.Groups["type"];
-            return grp.Success ? grp.Value : "";
+            return grp.Success ? grp.Value : "text/plain";
         }
 
         public static string GetTransferEncoding(this IEnumerable<SmtpHeader> headers)
         {
-            return headers.ValueOf("Content-Transfer-Encoding");
+            return headers.ValueOf("Content-Transfer-Encoding", defaultValue: "7bit");
         }
 
         public static string GetCharSet(this IEnumerable<SmtpHeader> headers)
@@ -71,7 +72,7 @@ namespace Toolbelt.Net.Smtp
             var contentType = headers.ValueOf("Content-Type");
             var m = Regex.Match(contentType, "charset=\"?(?<charset>[^\";]+)\"?", RegexOptions.IgnoreCase);
             var grp = m.Groups["charset"];
-            return grp.Success ? grp.Value : "";
+            return grp.Success ? grp.Value : "us-ascii";
         }
 
         public static string GetBoundary(this IEnumerable<SmtpHeader> headers)
