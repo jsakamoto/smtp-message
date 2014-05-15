@@ -63,12 +63,17 @@ namespace Toolbelt.Net.Smtp.Test
             var msg = new SmtpMessage();
             msg.Headers.Add("Content-Type", "text/plain; charset=\"ISO-2022-JP\"");
             msg.Headers.Add("Content-Transfer-Encoding", "7bit");
-            msg.Data.Add("\x1b$B$?$H$($P!\"0lCW$9$kI=;f!\"%X%C%@!<!\"%5%$%I%P!<$rDI2C$G$-$^$9!#\x1b(B[\x1b$BA^F~\x1b(B] \x1b$B$r%/%j%C%/$7$F$+$i");
-            msg.Data.Add("!\"$=$l$>$l$N%.%c%i%j!<$GL\\E*$NMWAG$rA*$s$G$/$@$5$$!#\x1b(B\r\n\x1b$B%F!<%^$H%9%?%$%k$r;H$C$F!\"J8=qA4BN$NE}0l");
-            msg.Data.Add("46$r=P$9$3$H$b$G$-$^$9!#\x1b(B");
+            msg.Data.AddRange(new[] {
+                "\x1b$B$?$H$($P!\"0lCW$9$kI=;f!\"%X%C%@!<!\"%5%$%I%P!<$rDI2C$G$-$^$9!#\x1b(B",
+                "[\x1b$BA^F~\x1b(B] \x1b$B$r%/%j%C%/$7$F$+$i!\"$=$l$>$l$N%.%c%i%j!<$GL\\E*$NMWAG$rA*$s$G$/$@$5$$!#\x1b(B",
+                "",
+                "\x1b$B%F!<%^$H%9%?%$%k$r;H$C$F!\"J8=qA4BN$NE}0l46$r=P$9$3$H$b$G$-$^$9!#\x1b(B"
+            });
 
             msg.Body.Is(
-                "たとえば、一致する表紙、ヘッダー、サイドバーを追加できます。[挿入] をクリックしてから、それぞれのギャラリーで目的の要素を選んでください。\r\n" +
+                "たとえば、一致する表紙、ヘッダー、サイドバーを追加できます。\r\n" +
+                "[挿入] をクリックしてから、それぞれのギャラリーで目的の要素を選んでください。\r\n" +
+                "\r\n" +
                 "テーマとスタイルを使って、文書全体の統一感を出すこともできます。");
         }
 
@@ -322,7 +327,7 @@ namespace Toolbelt.Net.Smtp.Test
         {
             var msg = new SmtpMessage();
             msg.Load(PathOf("expected.eml"));
-            
+
             Assert_SmtpMessage(msg);
         }
 

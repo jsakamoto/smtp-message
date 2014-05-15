@@ -63,7 +63,7 @@ namespace Toolbelt.Net.Smtp.Internal
 
         private static byte[] DecodeTransferToBytes_7bitAscii(IEnumerable<string> data)
         {
-            return Encoding.ASCII.GetBytes(string.Concat(data));
+            return Encoding.ASCII.GetBytes(string.Join("\r\n", data));
         }
 
         public static string DecodeText(string text)
