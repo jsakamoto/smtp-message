@@ -77,7 +77,7 @@ namespace Toolbelt.Net.Smtp
 
         public static string GetBoundary(this IEnumerable<SmtpHeader> headers)
         {
-            var m = Regex.Match(headers.Find("Content-Type").Value, "boundary=(?<b>[^;]+)");
+            var m = Regex.Match(headers.Find("Content-Type").Value, "boundary=\"?(?<b>[^;\"]+)\"?");
             return m.Success ? m.Groups["b"].Value : "";
         }
 

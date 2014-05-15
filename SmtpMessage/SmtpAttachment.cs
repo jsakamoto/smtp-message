@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
+using Toolbelt.Net.Smtp.Internal;
 
 namespace Toolbelt.Net.Smtp
 {
@@ -24,7 +25,7 @@ namespace Toolbelt.Net.Smtp
 
         public SmtpAttachment(IEnumerable<byte> contentBytes, string name, string mediaType)
         {
-            this.Name = name;
+            this.Name = MIMEDecoder.DecodeText(name);
             this.MediaType = mediaType;
             this.ContentBytes = contentBytes.ToArray();
         }

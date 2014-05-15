@@ -312,14 +312,33 @@ namespace Toolbelt.Net.Smtp.Test
             expected.Is(actual);
         }
 
+        public static string PathOf(string fileName)
+        {
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "_Deploy", fileName);
+        }
+
         [TestMethod]
         public void Load_Test()
         {
-            var loadFromPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "_Deploy", "expected.eml");
             var msg = new SmtpMessage();
-            msg.Load(loadFromPath);
+            msg.Load(PathOf("expected.eml"));
             
             Assert_SmtpMessage(msg);
+        }
+
+        [TestMethod]
+        public void Load_with_Attachment_Test()
+        {
+            var msg = SmtpMessage.CreateFrom(PathOf("mail-with-attachment.eml"));
+
+            var body = msg.Body;
+            msg.Attachments.Count().Is(2);
+            msg.Attachments[0].Name.Is("Markdown Presenter.pdf");
+            msg.Attachments[0].ContentBytes
+                .Is(File.ReadAllBytes(PathOf("Markdown Presenter.pdf")));
+            msg.Attachments[1].Name.Is("花.jpg");
+            msg.Attachments[1].ContentBytes
+                .Is(File.ReadAllBytes(PathOf("花.jpg")));
         }
     }
 }

@@ -29,10 +29,13 @@ namespace Toolbelt.Net.Smtp.Internal
         {
             if (this.Headers.GetContentType().ToLower() != "multipart/mixed") return Enumerable.Empty<MIMEPart>();
             var boundary = this.Headers.GetBoundary();
-            return SplitByBoundary(this.Data, "--" + boundary, "--" + boundary + "--")
-             .Select(lines => new MIMEPart(
-                 SmtpHeaderExtension.CreateHeaders(lines.TakeWhile(l => l != "")),
-                 lines.SkipWhile(l => l != "").Skip(1)
+            
+            return 
+                SplitByBoundary(this.Data, "--" + boundary, "--" + boundary + "--")
+                .Skip(1)
+                .Select(lines => new MIMEPart(
+                     SmtpHeaderExtension.CreateHeaders(lines.TakeWhile(l => l != "")),
+                     lines.SkipWhile(l => l != "").Skip(1)
              ));
         }
 
@@ -61,7 +64,7 @@ namespace Toolbelt.Net.Smtp.Internal
             while (texts.Any())
             {
                 var bound = texts.TakeWhile(predicate).ToArray();
-                if (bound.Any(b => b != "")) yield return bound;
+                yield return bound;
                 texts = texts.SkipWhile(predicate).Skip(1);
             }
         }
