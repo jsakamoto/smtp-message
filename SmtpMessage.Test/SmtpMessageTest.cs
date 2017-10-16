@@ -197,7 +197,7 @@ namespace Toolbelt.Net.Smtp.Test
             var msg = new SmtpMessage();
             msg.Date.IsNull();
             msg.Headers.Add("Date", "2 Jan 2014 20:23:13 +0900");
-            msg.Date.Is(DateTime.Parse("2014/1/2 20:23:13"));
+            msg.Date.Is(DateTime.Parse("2014/1/2 20:23:13 +0900"));
         }
 
         [Fact(DisplayName = "SmtpMessage.Attachments - Empty")]
