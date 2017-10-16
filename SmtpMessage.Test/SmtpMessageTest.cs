@@ -2,18 +2,20 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Text;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using Xunit;
 
 namespace Toolbelt.Net.Smtp.Test
 {
-    [TestClass]
     public class SmtpMessageTest
     {
-        public TestContext TestContext { get; set; }
+        public SmtpMessageTest()
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.Headers.GetCharSet()")]
         public void CharSet_Test()
         {
             var msg = new SmtpMessage();
@@ -25,7 +27,7 @@ namespace Toolbelt.Net.Smtp.Test
             msg.Headers.GetCharSet().Is("ISO-2022-JP");
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.Body - ASCII/QuotedPrintable")]
         public void Body_Ascii_QuotedPrintable_Test()
         {
             var msg = new SmtpMessage();
@@ -40,7 +42,7 @@ namespace Toolbelt.Net.Smtp.Test
                 "\tmagna aliqua. laborum. ");
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.Body - UTF8/Base64")]
         public void Body_Utf8_Base64_Test()
         {
             var msg = new SmtpMessage();
@@ -57,7 +59,7 @@ namespace Toolbelt.Net.Smtp.Test
                 "テーマとスタイルを使って、文書全体の統一感を出すこともできます。");
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.Body - ISO-2022-JP/7bit")]
         public void Body_Iso2022jp_7bit_Test()
         {
             var msg = new SmtpMessage();
@@ -77,12 +79,12 @@ namespace Toolbelt.Net.Smtp.Test
                 "テーマとスタイルを使って、文書全体の統一感を出すこともできます。");
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.Body - Multipart")]
         public void Body_MultiPart_Test()
         {
             var msg = new SmtpMessage();
             msg.Headers.Add("Content-Type", "multipart/mixed;", "boundary=--boundary_0_73bba9c5-516c-4f50-b880-a0d19568b806");
-            msg.Data.AddRange(new[] { 
+            msg.Data.AddRange(new[] {
                 "",
                 "----boundary_0_73bba9c5-516c-4f50-b880-a0d19568b806",
                 "Content-Type: text/plain; charset=iso-2022-jp",
@@ -101,7 +103,7 @@ namespace Toolbelt.Net.Smtp.Test
             msg.Body.Is("日本語");
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.Subject - ISO-2022-JP/Base64")]
         public void Subject_Iso2022jp_Base64_Test()
         {
             var msg = new SmtpMessage();
@@ -109,7 +111,7 @@ namespace Toolbelt.Net.Smtp.Test
             msg.Subject.Is("こんにちは世界");
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.Subject - ISO-2022-JP/QuotedPrintable")]
         public void Subject_Iso2022jp_QuotedPrintable_Test()
         {
             var msg = new SmtpMessage();
@@ -117,7 +119,7 @@ namespace Toolbelt.Net.Smtp.Test
             msg.Subject.Is("こんにちは世界");
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.From - Address Only with Blacket")]
         public void From_AddressOnly_Blacket_Test()
         {
             var msg = new SmtpMessage();
@@ -126,7 +128,7 @@ namespace Toolbelt.Net.Smtp.Test
             msg.From.Address.Is("anderson@example.com");
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.From - Address Only without Blacket")]
         public void From_AddressOnly_NoBlacket_Test()
         {
             var msg = new SmtpMessage();
@@ -135,7 +137,7 @@ namespace Toolbelt.Net.Smtp.Test
             msg.From.Address.Is("anderson@example.com");
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.From - ASCII/7bit")]
         public void From_Ascii_7bit_Test()
         {
             var msg = new SmtpMessage();
@@ -144,7 +146,7 @@ namespace Toolbelt.Net.Smtp.Test
             msg.From.Address.Is("anderson@example.com");
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.From - ISO-2022-JP/Base64")]
         public void From_Iso2022jp_Base64_Test()
         {
             var msg = new SmtpMessage();
@@ -153,7 +155,7 @@ namespace Toolbelt.Net.Smtp.Test
             msg.From.Address.Is("taro@example.com");
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.To")]
         public void To_Test()
         {
             var msg = new SmtpMessage();
@@ -164,14 +166,14 @@ namespace Toolbelt.Net.Smtp.Test
                 .Is("anderson@example.com", "oracle@example.com");
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.To - Empty")]
         public void To_Empty_Test()
         {
             var msg = new SmtpMessage();
             msg.To.Count().Is(0);
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.CC")]
         public void CC_Test()
         {
             var msg = new SmtpMessage();
@@ -182,14 +184,14 @@ namespace Toolbelt.Net.Smtp.Test
                 .Is("anderson@example.com", "oracle@example.com");
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.CC - Empty")]
         public void CC_Empty_Test()
         {
             var msg = new SmtpMessage();
             msg.CC.Count().Is(0);
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.Date")]
         public void Date_Test()
         {
             var msg = new SmtpMessage();
@@ -198,7 +200,7 @@ namespace Toolbelt.Net.Smtp.Test
             msg.Date.Is(DateTime.Parse("2014/1/2 20:23:13"));
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.Attachments - Empty")]
         public void Attachment_Empty_Test()
         {
             var msg = new SmtpMessage();
@@ -237,7 +239,7 @@ namespace Toolbelt.Net.Smtp.Test
             return msg;
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage can serialize/deserialize with Json.NET (minimal)")]
         public void Can_Serialize_Deserialize_as_Json_by_JsonNET_Minimum_Test()
         {
             var msg = new SmtpMessage();
@@ -258,7 +260,7 @@ namespace Toolbelt.Net.Smtp.Test
             msg2.Attachments.Count().Is(0);
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage can serialize/deserialize with Json.NET")]
         public void Can_Serialize_Deserialize_as_Json_by_JsonNET_Test()
         {
             var msg = CreateTestMessage1();
@@ -304,11 +306,11 @@ namespace Toolbelt.Net.Smtp.Test
                 "----boundary----");
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.SaveAs()")]
         public void SaveAs_Test()
         {
             var msg = CreateTestMessage1();
-            var saveToPath = Path.Combine(this.TestContext.ResultsDirectory, "actual.eml");
+            var saveToPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "actual.eml");
             msg.SaveAs(saveToPath);
 
             var expected = File.ReadLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "_Deploy", "expected.eml"));
@@ -322,7 +324,7 @@ namespace Toolbelt.Net.Smtp.Test
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "_Deploy", fileName);
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.Load()")]
         public void Load_Test()
         {
             var msg = new SmtpMessage();
@@ -331,7 +333,7 @@ namespace Toolbelt.Net.Smtp.Test
             Assert_SmtpMessage(msg);
         }
 
-        [TestMethod]
+        [Fact(DisplayName = "SmtpMessage.Load() with attachments")]
         public void Load_with_Attachment_Test()
         {
             var msg = SmtpMessage.CreateFrom(PathOf("mail-with-attachment.eml"));
