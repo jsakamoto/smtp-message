@@ -22,6 +22,7 @@
 - .NET Standard 2.0 / .NET Core 2.0 / .NET Framework 4.5 support.
 v.1.0.0.7
 - Beta release</PackageReleaseNotes>
+    <Description>Represents the message of an electronic mail via SMTP, that contains headers, addresses, attachments, and multipart body.</Description>
   </PropertyGroup>
 
 </Project>
