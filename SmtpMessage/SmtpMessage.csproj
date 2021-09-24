@@ -7,7 +7,7 @@
     <GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'">true</GeneratePackageOnBuild>
     <Company />
     <Authors>J.Sakamoto</Authors>
-    <Version>1.0.0.8</Version>
+    <Version>1.0.1.0</Version>
     <Product>SmtpMessage</Product>
     <PackageLicenseUrl>https://github.com/jsakamoto/smtp-message/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/jsakamoto/smtp-message/</PackageProjectUrl>
@@ -17,8 +17,10 @@
     <PackageTags>smtp,mime,mail,message</PackageTags>
     <AssemblyVersion>1.0.0.8</AssemblyVersion>
     <FileVersion>1.0.0.8</FileVersion>
-    <Copyright>Mozilla Public License, version 2.0, J.Sakamoto 2014-2017</Copyright>
-    <PackageReleaseNotes>v.1.0.0.8
+    <Copyright>Mozilla Public License, version 2.0, J.Sakamoto 2014-2021</Copyright>
+    <PackageReleaseNotes>v.1.0.1
+- Fix: decoding mail headers values was failed in some cases.
+v.1.0.0.8
 - .NET Standard 2.0 / .NET Core 2.0 / .NET Framework 4.5 support.
 v.1.0.0.7
 - Beta release</PackageReleaseNotes>
