@@ -1,14 +1,8 @@
 version: 1.0.{build}
-image: Visual Studio 2017
-configuration: Debug
-platform: Any CPU
-before_build:
-- cmd: .\.nuget\nuget restore
-build:
-  verbosity: minimal
+image: Visual Studio 2019
+build: off
 test_script:
 - cmd: >-
     cd SmtpMessage.Test
 
     dotnet test
-
