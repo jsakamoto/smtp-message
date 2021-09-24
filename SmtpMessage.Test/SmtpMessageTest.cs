@@ -119,6 +119,14 @@ namespace Toolbelt.Net.Smtp.Test
             msg.Subject.Is("こんにちは世界");
         }
 
+        [Fact(DisplayName = "SmtpMessage.Subject - UTF-8/Base64")]
+        public void Subject_Utf8_Base64_Test()
+        {
+            var msg = new SmtpMessage();
+            msg.Headers.Add("Subject", "HELLO =?utf-8?b?44GT44KM44Gv44K/44Kk44OI44Or44Gn44GZ?=");
+            msg.Subject.Is("HELLO これはタイトルです");
+        }
+
         [Fact(DisplayName = "SmtpMessage.From - Address Only with Blacket")]
         public void From_AddressOnly_Blacket_Test()
         {

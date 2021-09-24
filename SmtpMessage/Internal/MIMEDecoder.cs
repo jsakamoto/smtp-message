@@ -69,7 +69,7 @@ namespace Toolbelt.Net.Smtp.Internal
         public static string DecodeText(string text)
         {
             var matches = Regex
-                .Matches(text, @"(?<g1>=\?(?<char>[^\?]+)\?(?<enc>[^\?]+)\?(?<body>[^\?]+)\?=)|(?<g2>.+)")
+                .Matches(text, @"(?<g1>=\?(?<char>[^\?]+)\?(?<enc>[^\?]+)\?(?<body>[^\?]+)\?=)|(?<g2>.+?)")
                 .Cast<Match>();
             var m1 = matches.FirstOrDefault(m => m.Groups["g1"].Success);
             var charset = m1 != null ? m1.Groups["char"].Value : "us-ascii";
